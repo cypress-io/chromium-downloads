@@ -19,6 +19,6 @@
   text-decoration: none;
 }
 
-.card-header {
+.card-header, .card-footer {
   text-align: center;
 }

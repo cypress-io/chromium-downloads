@@ -1,5 +1,5 @@
 import React from 'react';
-import { H2, Card, NonIdealState, Button, Spinner, HTMLTable } from '@blueprintjs/core';
+import { Breadcrumbs, H2, Card, NonIdealState, Button, Spinner, HTMLTable } from '@blueprintjs/core';
 import { Link } from 'react-router-dom'
 import { osToNameMap } from './util';
 
@@ -13,6 +13,9 @@ export default class ReleaseTable extends React.Component {
     }
 
     componentDidMount() {
+        if (this.props.match && this.props.match.params.releaseOs) {
+            this.releaseOs = this.props.match.params.releaseOs
+        }
         this._loadReleases()
     }
 
@@ -56,7 +59,13 @@ export default class ReleaseTable extends React.Component {
     _renderReleases() {
         return (
             <>
-                <H2>Latest Releases</H2>
+                {this.releaseOs && <Breadcrumbs items={
+                    [
+                        { text: <Link to="/">All Releases</Link> },
+                        {}
+                    ]
+                }/>}
+                <H2>Latest Releases{this.releaseOs && ` for ${osToNameMap[this.releaseOs]}`}</H2>
                 <HTMLTable bordered condensed striped style={{width: '100%'}}>
                     <thead>
                         <tr>
@@ -71,7 +80,9 @@ export default class ReleaseTable extends React.Component {
                             return (
                                 <tr key={`${release.version} ${release.os} ${release.timestamp}`}>
                                     <td>{release.version}</td>
-                                    <td>{osToNameMap[release.os]}</td>
+                                    <td>
+                                        <Link to={`/${release.os}/`}>{osToNameMap[release.os]}</Link>
+                                    </td>
                                     <td>{release.timestamp}</td>
                                     <td>
                                         <Link to={`/${release.os}/${release.version}`}>Get downloads</Link>
@@ -92,6 +103,9 @@ export default class ReleaseTable extends React.Component {
         })
         .then(releases => {
             releases = releases.filter(release => osToNameMap[release.os])
+            if (this.releaseOs) {
+                releases = releases.filter(release => release.os === this.releaseOs)
+            }
             this.setState({
                 releasesLoaded: true,
                 releases

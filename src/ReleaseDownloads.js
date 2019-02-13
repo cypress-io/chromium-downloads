@@ -1,5 +1,6 @@
 import React from 'react'
-import { NonIdealState, Spinner, Card, H2, H4, HTMLTable, Icon } from '@blueprintjs/core'
+import { NonIdealState, Spinner, Card, H2, H4, HTMLTable, Icon, Breadcrumbs } from '@blueprintjs/core'
+import { Link } from 'react-router-dom'
 import { osToBaseDirMap, osToFilesMap, osToNameMap, getHumanReadableSize } from './util'
 
 const MAX_BASES_TO_CHECK = 50
@@ -8,7 +9,7 @@ export default class ReleaseDownloads extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            status: "Initializing",
+            logs: [],
             chromiumBaseCur: undefined,
             downloads: [],
             loaded: false,
@@ -46,8 +47,14 @@ export default class ReleaseDownloads extends React.Component {
         return (
             <>
                 <Card>
+                    <Breadcrumbs items={
+                        [
+                            { text: <Link to="/">All Releases</Link> },
+                            { text: <Link to={`/${this.releaseOs}/`}>{osToNameMap[this.releaseOs]} Releases</Link> },
+                            {}
+                        ]
+                    }/>
                     <H2>{title}</H2>
-                    Downloads for this version found!
                 </Card>
                 <Card>
                     <H4>Archives and installers</H4>
@@ -116,26 +123,30 @@ export default class ReleaseDownloads extends React.Component {
 
     _renderLoading() {
         return (
-            <NonIdealState icon={<Spinner/>}
-                            description={this.state.status}
-                            title="Loading"
-                            />
+            <Card>
+                <NonIdealState icon={<Spinner/>}
+                                description={this.state.logs.map(s => <>{s}<br/></>)}
+                                title="Loading"
+                                />
+            </Card>
         )
     }
 
     _renderError() {
         return (
-            <NonIdealState icon="error"
-                           description={`An error occurred while loading release history: "${this.state.error.message}"`}
-                           title="Error Loading Downloads"
-                           />
+            <Card>
+                <NonIdealState icon="error"
+                            description={this._logWith(`An error occurred while loading release history: "${this.state.error.message}"`).map(s => <>{s}<br/></>)}
+                            title="Error Loading Downloads"
+                            />
+            </Card>
         )
     }
 
     // https://omahaproxy.appspot.com/deps.json?version=74.0.3704.1
     _findBase() {
         this.setState({
-            status: `Loading commit info for ${this.releaseVersion}`
+            logs: this._logWith(`Loading commit info for ${this.releaseVersion}`)
         })
         return fetch(`https://omahaproxy.appspot.com/deps.json?version=${this.releaseVersion}`)
         .then(response => response.json())
@@ -150,7 +161,7 @@ export default class ReleaseDownloads extends React.Component {
     _findDownloads(base) {
         this.setState({
             chromiumBaseCur: base,
-            status: `Checking Chromium at base position ${base} for available artifacts`
+            logs: this._logWith(`Checking Chromium at base position ${base} for available artifacts`)
         })
         return fetch(this._getStorageApiUrl(base))
         .then(response => response.json())
@@ -164,6 +175,10 @@ export default class ReleaseDownloads extends React.Component {
             }
             return json.items
         })
+    }
+
+    _logWith(msg) {
+        return [msg, ...this.state.logs]
     }
 
     _getStorageApiUrl(base) {
