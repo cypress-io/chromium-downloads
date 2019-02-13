@@ -125,7 +125,7 @@ export default class ReleaseDownloads extends React.Component {
         return (
             <Card>
                 <NonIdealState icon={<Spinner/>}
-                                description={this.state.logs.map(s => <>{s}<br/></>)}
+                                description={this.state.logs.map((s, i) => <React.Fragment key={i}>{s}<br/></React.Fragment>)}
                                 title="Loading"
                                 />
             </Card>
@@ -136,7 +136,7 @@ export default class ReleaseDownloads extends React.Component {
         return (
             <Card>
                 <NonIdealState icon="error"
-                            description={this._logWith(`An error occurred while loading release history: "${this.state.error.message}"`).map(s => <>{s}<br/></>)}
+                            description={this._logWith(`An error occurred while loading release history: "${this.state.error.message}"`).map((s, i) => <React.Fragment key={i}>{s}<br/></React.Fragment>)}
                             title="Error Loading Downloads"
                             />
             </Card>

@@ -8,14 +8,12 @@ export default class ReleaseTable extends React.Component {
         super(props)
         this.state = {
             releasesLoaded: false,
-            errorLoading: false
+            errorLoading: false,
+            releaseOs: false
         }
     }
 
     componentDidMount() {
-        if (this.props.match && this.props.match.params.releaseOs) {
-            this.releaseOs = this.props.match.params.releaseOs
-        }
         this._loadReleases()
     }
 
@@ -25,6 +23,12 @@ export default class ReleaseTable extends React.Component {
                 {this._render()}
             </Card>
         )
+    }
+
+    _getOs() {
+        if (this.props.match && this.props.match.params.releaseOs) {
+            return this.props.match.params.releaseOs
+        }
     }
 
     _render() {
@@ -59,13 +63,13 @@ export default class ReleaseTable extends React.Component {
     _renderReleases() {
         return (
             <>
-                {this.releaseOs && <Breadcrumbs items={
+                {this._getOs() && <Breadcrumbs items={
                     [
                         { text: <Link to="/">All Releases</Link> },
                         {}
                     ]
                 }/>}
-                <H2>Latest Releases{this.releaseOs && ` for ${osToNameMap[this.releaseOs]}`}</H2>
+                <H2>Latest Releases{this._getOs() && ` for ${osToNameMap[this._getOs()]}`}</H2>
                 <HTMLTable bordered condensed striped style={{width: '100%'}}>
                     <thead>
                         <tr>
@@ -76,7 +80,11 @@ export default class ReleaseTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.releases.map(release => {
+                        {this.state.releases
+                        .filter(release => {
+                            return !this._getOs() || release.os === this._getOs()
+                        })
+                        .map(release => {
                             return (
                                 <tr key={`${release.version} ${release.os} ${release.timestamp}`}>
                                     <td>{release.version}</td>
@@ -103,9 +111,6 @@ export default class ReleaseTable extends React.Component {
         })
         .then(releases => {
             releases = releases.filter(release => osToNameMap[release.os])
-            if (this.releaseOs) {
-                releases = releases.filter(release => release.os === this.releaseOs)
-            }
             this.setState({
                 releasesLoaded: true,
                 releases

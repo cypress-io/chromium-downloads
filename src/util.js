@@ -11,6 +11,8 @@ export const osToNameMap = {
     'linux': 'Linux'
 }
 
+export const osKeys = Object.keys(osToNameMap)
+
 export var osToFilesMap = {
     'win': [
         {
