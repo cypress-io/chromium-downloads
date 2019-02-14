@@ -1,7 +1,7 @@
 import React from 'react'
 import { NonIdealState, Spinner, Card, H2, H4, HTMLTable, Icon, Breadcrumbs } from '@blueprintjs/core'
 import { Link } from 'react-router-dom'
-import { osToBaseDirMap, osToFilesMap, osToNameMap, getHumanReadableSize } from './util'
+import { osInfo, getHumanReadableSize } from './util'
 
 const MAX_BASES_TO_CHECK = 50
 
@@ -42,7 +42,7 @@ export default class ReleaseDownloads extends React.Component {
 
     _renderDownloads() {
         let unknownDownloads = []
-        const title = `Chromium ${this.releaseVersion} for ${osToNameMap[this.releaseOs]}`
+        const title = `Chromium ${this.releaseVersion} for ${osInfo[this.releaseOs].name}`
         document.title = title
         return (
             <>
@@ -50,7 +50,7 @@ export default class ReleaseDownloads extends React.Component {
                     <Breadcrumbs items={
                         [
                             { text: <Link to="/">All Releases</Link> },
-                            { text: <Link to={`/${this.releaseOs}/`}>{osToNameMap[this.releaseOs]} Releases</Link> },
+                            { text: <Link to={`/${this.releaseOs}/`}>{osInfo[this.releaseOs].name} Releases</Link> },
                             {}
                         ]
                     }/>
@@ -69,7 +69,7 @@ export default class ReleaseDownloads extends React.Component {
                         <tbody>
                         {this.state.downloads.map(download => {
                             const basename = download.name.slice(download.name.lastIndexOf('/') + 1)
-                            const knownFile = osToFilesMap[this.releaseOs].find(file => file.filename === basename)
+                            const knownFile = osInfo[this.releaseOs].files.find(file => file.filename === basename)
                             if (!knownFile) {
                                 unknownDownloads.push(download)
                                 return false
@@ -182,6 +182,6 @@ export default class ReleaseDownloads extends React.Component {
     }
 
     _getStorageApiUrl(base) {
-        return `https://www.googleapis.com/storage/v1/b/chromium-browser-snapshots/o?delimiter=/&prefix=${osToBaseDirMap[this.releaseOs]}/${base}/&fields=items(kind,mediaLink,metadata,name,size,updated),kind,prefixes,nextPageToken`
+        return `https://www.googleapis.com/storage/v1/b/chromium-browser-snapshots/o?delimiter=/&prefix=${osInfo[this.releaseOs].baseDir}/${base}/&fields=items(kind,mediaLink,metadata,name,size,updated),kind,prefixes,nextPageToken`
     }
 }

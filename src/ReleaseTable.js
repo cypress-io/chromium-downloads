@@ -1,7 +1,7 @@
 import React from 'react';
 import { Breadcrumbs, H2, Card, NonIdealState, Button, Spinner, HTMLTable } from '@blueprintjs/core';
 import { Link } from 'react-router-dom'
-import { osToNameMap } from './util';
+import { osInfo } from './util';
 
 export default class ReleaseTable extends React.Component {
     constructor(props) {
@@ -61,6 +61,7 @@ export default class ReleaseTable extends React.Component {
     }
 
     _renderReleases() {
+        const title = document.title = `Latest Releases${this._getOs() ? ` for ${osInfo[this._getOs()].name}` : ''}`
         return (
             <>
                 {this._getOs() && <Breadcrumbs items={
@@ -69,7 +70,7 @@ export default class ReleaseTable extends React.Component {
                         {}
                     ]
                 }/>}
-                <H2>Latest Releases{this._getOs() && ` for ${osToNameMap[this._getOs()]}`}</H2>
+                <H2>{title}</H2>
                 <HTMLTable bordered condensed striped style={{width: '100%'}}>
                     <thead>
                         <tr>
@@ -89,7 +90,7 @@ export default class ReleaseTable extends React.Component {
                                 <tr key={`${release.version} ${release.os} ${release.timestamp}`}>
                                     <td>{release.version}</td>
                                     <td>
-                                        <Link to={`/${release.os}/`}>{osToNameMap[release.os]}</Link>
+                                        <Link to={`/${release.os}/`}>{osInfo[release.os].name}</Link>
                                     </td>
                                     <td>{release.timestamp}</td>
                                     <td>
@@ -110,7 +111,8 @@ export default class ReleaseTable extends React.Component {
             return response.json()
         })
         .then(releases => {
-            releases = releases.filter(release => osToNameMap[release.os])
+            // filter to OS's we recognize
+            releases = releases.filter(release => osInfo[release.os])
             this.setState({
                 releasesLoaded: true,
                 releases

@@ -4,45 +4,47 @@ export const getHumanReadableSize = (size) => {
     return filesize(parseInt(size)).human('si')
 }
 
-export const osToNameMap = {
-    'win64': 'Windows (x64)',
-    'win':   'Windows (x86)',
-    'mac':   'Mac OS',
-    'linux': 'Linux'
+export var osInfo = {
+    'win64': {
+        name: 'Windows (x64)',
+        baseDir: 'Win_x64',
+        files: [
+            {
+                name: 'Installer',
+                filename: 'mini_installer.exe'
+            },
+            {
+                name: 'Archive',
+                filename: 'chrome-win.zip'
+            }
+        ]
+    },
+    'win': {
+        name: 'Windows (x86)',
+        baseDir: 'Win'
+    },
+    'mac': {
+        name: 'Mac OS',
+        baseDir: 'Mac',
+        files: [
+            {
+                name: 'Archive',
+                filename: 'chrome-mac.zip'
+            }
+        ]
+    },
+    'linux': {
+        name: 'Linux',
+        baseDir: 'Linux_x64',
+        files: [
+            {
+                name: 'Archive',
+                filename: 'chrome-linux.zip'
+            }
+        ]
+    }
 }
 
-export const osKeys = Object.keys(osToNameMap)
+osInfo.win.files = osInfo.win64.files
 
-export var osToFilesMap = {
-    'win': [
-        {
-            name: 'Installer',
-            filename: 'mini_installer.exe'
-        },
-        {
-            name: 'Archive',
-            filename: 'chrome-win.zip'
-        }
-    ],
-    'linux': [
-        {
-            name: 'Archive',
-            filename: 'chrome-linux.zip'
-        }
-    ],
-    'mac': [
-        {
-            name: 'Archive',
-            filename: 'chrome-mac.zip'
-        }
-    ]
-}
-
-osToFilesMap.win64 = osToFilesMap.win
-
-export const osToBaseDirMap = {
-    'win64': 'Win_x64',
-    'win':   'Win',
-    'mac':   'Mac',
-    'linux': 'Linux_x64'
-}
+export const osKeys = Object.keys(osInfo)
