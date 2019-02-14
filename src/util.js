@@ -4,6 +4,26 @@ export const getHumanReadableSize = (size) => {
     return filesize(parseInt(size)).human('si')
 }
 
+export const channelInfo = {
+    'canary': {
+        color: 'warning'
+    },
+    'canary_asan': {
+        color: 'warning'
+    },
+    'stable': {
+        color: 'success'
+    },
+    'dev': {
+        color: 'primary'
+    },
+    'beta': {
+        color: 'danger'
+    }
+}
+
+export const channelKeys = Object.keys(channelInfo)
+
 export var osInfo = {
     'win64': {
         name: 'Windows (x64)',

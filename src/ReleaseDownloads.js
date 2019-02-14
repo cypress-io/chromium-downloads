@@ -1,7 +1,7 @@
 import React from 'react'
-import { NonIdealState, Spinner, Card, H2, H4, HTMLTable, Icon, Breadcrumbs } from '@blueprintjs/core'
+import { Button, NonIdealState, Spinner, Card, H2, H4, HTMLTable, Icon, Breadcrumbs, Tag } from '@blueprintjs/core'
 import { Link } from 'react-router-dom'
-import { osInfo, getHumanReadableSize } from './util'
+import { osInfo, getHumanReadableSize, channelInfo } from './util'
 
 const MAX_BASES_TO_CHECK = 50
 
@@ -21,6 +21,7 @@ export default class ReleaseDownloads extends React.Component {
     componentDidMount() {
         this.releaseOs = this.props.match.params.releaseOs
         this.releaseVersion = this.props.match.params.releaseVersion
+        this.releaseChannel = this.props.match.params.releaseChannel
         this._findBase().then((base) => this._findDownloads(base))
         .then(downloads => {
             this.setState({ loaded: true, downloads })
@@ -42,6 +43,7 @@ export default class ReleaseDownloads extends React.Component {
 
     _renderDownloads() {
         let unknownDownloads = []
+        const baseRevision = this.state.chromiumBaseCur - this.basesChecked
         const title = `Chromium ${this.releaseVersion} for ${osInfo[this.releaseOs].name}`
         document.title = title
         return (
@@ -55,6 +57,11 @@ export default class ReleaseDownloads extends React.Component {
                         ]
                     }/>
                     <H2>{title}</H2>
+                    <div className="bp3-text-muted">
+                        Release channel: <Tag intent={channelInfo[this.releaseChannel].color}>{this.releaseChannel}</Tag>{' '}
+                        Base revision: <a href={this._getCrRevUrl(baseRevision)}>{baseRevision}</a>.{' '}
+                        Found build artifacts at <a href={this._getCrRevUrl(this.state.chromiumBaseCur)}>{this.state.chromiumBaseCur}</a> <a href={this._getStorageBrowserUrl(this.state.chromiumBaseCur)}>[browse files]</a>
+                    </div>
                 </Card>
                 <Card>
                     <H4>Archives and installers</H4>
@@ -136,8 +143,21 @@ export default class ReleaseDownloads extends React.Component {
         return (
             <Card>
                 <NonIdealState icon="error"
-                            description={this._logWith(`An error occurred while loading release history: "${this.state.error.message}"`).map((s, i) => <React.Fragment key={i}>{s}<br/></React.Fragment>)}
-                            title="Error Loading Downloads"
+                            description={<>
+                                    <div style={{color: '#DB3737'}}>
+                                        An error occurred while trying to find artifacts: <br/>
+                                        "{this.state.error.message}"<br/><br/>
+                                        Please try a different release or come back later.<br/>
+                                        <br/>
+                                    </div>
+                                    <div className="bp3-text-muted">
+                                        <strong>Logs:</strong><br/>
+                                        {this.state.logs.map((s, i) => <React.Fragment key={i}>{s}<br/></React.Fragment>)}
+                                    </div>
+                                </>
+                                }
+                            action={<Button onClick={()=>window.location.reload()} icon="refresh">Reload page</Button>}
+                            title="Error Finding Artifacts"
                             />
             </Card>
         )
@@ -171,7 +191,7 @@ export default class ReleaseDownloads extends React.Component {
                 if (this.basesChecked === MAX_BASES_TO_CHECK) {
                     throw new Error(`Reached limit of ${MAX_BASES_TO_CHECK} base checks before finding an artifact. Stopping at base ${base}`)
                 }
-                return this._findDownloads(base - 1)
+                return this._findDownloads(base + 1)
             }
             return json.items
         })
@@ -183,5 +203,13 @@ export default class ReleaseDownloads extends React.Component {
 
     _getStorageApiUrl(base) {
         return `https://www.googleapis.com/storage/v1/b/chromium-browser-snapshots/o?delimiter=/&prefix=${osInfo[this.releaseOs].baseDir}/${base}/&fields=items(kind,mediaLink,metadata,name,size,updated),kind,prefixes,nextPageToken`
+    }
+
+    _getCrRevUrl(base) {
+        return `https://crrev.com/${base}`
+    }
+
+    _getStorageBrowserUrl(base) {
+        return `https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html?prefix=${osInfo[this.releaseOs].baseDir}/${base}/`
     }
 }

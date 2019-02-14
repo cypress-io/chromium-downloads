@@ -1,15 +1,14 @@
 import React from 'react';
-import { Breadcrumbs, H2, Card, NonIdealState, Button, Spinner, HTMLTable } from '@blueprintjs/core';
+import { Tag, Breadcrumbs, H2, Card, NonIdealState, Button, Spinner, HTMLTable } from '@blueprintjs/core';
 import { Link } from 'react-router-dom'
-import { osInfo } from './util';
+import { osInfo, channelInfo } from './util';
 
 export default class ReleaseTable extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             releasesLoaded: false,
-            errorLoading: false,
-            releaseOs: false
+            errorLoading: false
         }
     }
 
@@ -75,6 +74,7 @@ export default class ReleaseTable extends React.Component {
                     <thead>
                         <tr>
                             <th>Version</th>
+                            <th>Channel</th>
                             <th>Platform</th>
                             <th>Release Date</th>
                             <th></th>
@@ -89,12 +89,13 @@ export default class ReleaseTable extends React.Component {
                             return (
                                 <tr key={`${release.version} ${release.os} ${release.timestamp}`}>
                                     <td>{release.version}</td>
+                                    <td><Tag intent={channelInfo[release.channel].color}>{release.channel}</Tag></td>
                                     <td>
                                         <Link to={`/${release.os}/`}>{osInfo[release.os].name}</Link>
                                     </td>
                                     <td>{release.timestamp}</td>
                                     <td>
-                                        <Link to={`/${release.os}/${release.version}`}>Get downloads</Link>
+                                        <Link to={`/${release.os}/${release.channel}/${release.version}`}>Get downloads</Link>
                                     </td>
                                 </tr>
                             )
@@ -113,6 +114,7 @@ export default class ReleaseTable extends React.Component {
         .then(releases => {
             // filter to OS's we recognize
             releases = releases.filter(release => osInfo[release.os])
+            releases = releases.sort((a, b) => a.version.localeCompare(b.version)*-1)
             this.setState({
                 releasesLoaded: true,
                 releases
