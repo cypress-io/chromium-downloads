@@ -77,13 +77,24 @@ export default class ReleaseTable extends React.Component {
                     ]
                 }/>}
 
-                <ReleaseFilter hideOs={!!this._getOs()} filters={this.state.filters} majorVersions={this._getMajorVersions()} onFilter={(type, key, value) => {
-                    this.setState({
-                        filters: Object.assign({}, this.state.filters, {
-                            [type]: this.state.filters[type].filter(key2 => value || key2 !== key).concat(value ? [key] : [])
-                        })
-                    })
-                }}/>
+                <ReleaseFilter hideOs={!!this._getOs()}
+                               filters={this.state.filters}
+                               majorVersions={this._getMajorVersions()}
+                               onFilter={(type, key, value) => {
+                                    this.setState({
+                                        filters: Object.assign({}, this.state.filters, {
+                                            [type]: this.state.filters[type].filter(key2 => value || key2 !== key).concat(value ? [key] : [])
+                                        })
+                                    })
+                                }}
+                                onClearFilters={() => {
+                                    this.setState({
+                                        filters: {
+                                            os: [], channel: [], majorVersion: []
+                                        }
+                                    })
+                                }}
+                                />
 
                 <H2 style={{display: 'inline-block'}}>{title}</H2>
 
@@ -156,7 +167,7 @@ export default class ReleaseTable extends React.Component {
     _getMajorVersions() {
         if (!this._majorVersions) {
             var majorVersions = []
-            this.state.releases.map(release => {
+            this.state.releases.forEach(release => {
                 const majorVersion = release.version.split('.', 2)[0]
                 if (!majorVersions.includes(majorVersion)) {
                     majorVersions.push(majorVersion)

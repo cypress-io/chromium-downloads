@@ -11,6 +11,7 @@ export default class ReleaseFilter extends React.PureComponent {
                     return <Tag intent={channelInfo[channelKey].color}>{channelKey}</Tag>
                 }))}
                 {this._renderFilters('Major Version', 'majorVersion', this.props.majorVersions, this.props.majorVersions)}
+                <Button icon="cross" title="Clear filters" onClick={()=>this.props.onClearFilters()}/>
             </ButtonGroup>
         )
     }
