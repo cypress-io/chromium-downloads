@@ -11,6 +11,10 @@
   margin-bottom: 1em;
 }
 
+.bp3-non-ideal-state > div {
+  max-width: none;
+}
+
 .card-header h1 {
   margin: 0;
 }
