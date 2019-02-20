@@ -36,6 +36,10 @@ export var osInfo = {
             {
                 name: 'Archive',
                 filename: 'chrome-win.zip'
+            },
+            {
+                name: 'Archive',
+                filename: 'chrome-win32.zip'
             }
         ]
     },
