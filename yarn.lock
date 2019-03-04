@@ -755,10 +755,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@blueprintjs/core@3.14.0":
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.14.0.tgz#b5f3f6652fe7d0c043349d235e7fda67fc168034"
-  integrity sha512-AlG2/bn5ml6MCeCx8i3YqAjTmoJMbSaCIFFntvtY/T+whw4XfiwHkru/ONj6NT/4Fqd0uimN14jxhD0GeZAsXw==
+"@blueprintjs/core@3.14.1":
+  version "3.14.1"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.14.1.tgz#9a0c816bbe6c232d6515361f502506a1fb53acfb"
+  integrity sha512-DlBkztfvk5RgD+MBo22LFxLa7Rz8DVgszNdXF0MY63QGjb1uYwdSJIKXtsN1bn42SRTz24Bzp498VhSJ2+5FuQ==
   dependencies:
     "@blueprintjs/icons" "^3.6.0"
     "@types/dom4" "^2.0.1"
