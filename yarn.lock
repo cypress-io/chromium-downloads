@@ -755,12 +755,12 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@blueprintjs/core@3.15.0":
-  version "3.15.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.15.0.tgz#49ba1dfee7dcefbb527d27c0f8d6bcf1086209d4"
-  integrity sha512-znXO0UaWBJO7Nm2qEvZzURCDuogsJ9DJlIw3N2XnIi+k/c8mQ1xlvtg0TT2pS88lMG9HUEKky3b0UQaSXBw4LA==
+"@blueprintjs/core@3.15.1":
+  version "3.15.1"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/core/-/core-3.15.1.tgz#9792e9fb7e2e066dd5339fadeaf2f85b1485832a"
+  integrity sha512-M8ltbqqlMZuZ6SEuqo/3Fr59ZcUfd8Er7ocbm7EACVfRW7dRhOCd/TKkf2kfICNtCDwznwXk0iAePLXZhUGtQg==
   dependencies:
-    "@blueprintjs/icons" "^3.7.0"
+    "@blueprintjs/icons" "^3.8.0"
     "@types/dom4" "^2.0.1"
     classnames "^2.2"
     dom4 "^2.0.1"
@@ -771,10 +771,10 @@
     resize-observer-polyfill "^1.5.0"
     tslib "^1.9.0"
 
-"@blueprintjs/icons@^3.7.0":
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-3.7.0.tgz#2a1907a41913773792c828a6c3ef082a1f1ebb77"
-  integrity sha512-608lQx1okOo85LNp7LyvsXWlgJjoQAiu29wULcktGuAuMmVXgueaGbMEDpuEMbu+uRlg9yqDhmk1eWm7W7R5ag==
+"@blueprintjs/icons@^3.8.0":
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/@blueprintjs/icons/-/icons-3.8.0.tgz#7c77c67e4a241740f803f05e4f6e3ce43c6d6560"
+  integrity sha512-yHaRQ3vfV9Gf3foZ4ONtxddz+u5ufkHqHj8Ia5VhPbFgG4el+cPdmsGGIIM72rgKS1KQa5Ay+ggjpByUlXvrKg==
   dependencies:
     classnames "^2.2"
     tslib "^1.9.0"
