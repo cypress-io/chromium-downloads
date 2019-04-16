@@ -6,18 +6,7 @@ node_js:
 script:
 - yarn build
 
-after_success:
-- scripts/deploy.sh
-
 sudo: false
-
-addons:
-  ssh_known_hosts: overflod.chary.us
-
-before_install:
-- openssl aes-256-cbc -K $encrypted_ee25406c996a_key -iv $encrypted_ee25406c996a_iv -in travis_rsa.enc -out travis_rsa -d
-- chmod 600 travis_rsa
-- mv travis_rsa ~/.ssh/id_rsa
 
 cache:
   npm: true
