@@ -1,16 +1,19 @@
 {
-  "name": "chromium-downloads",
-  "version": "0.1.0",
+  "name": "frontend",
+  "version": "0.0.0",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "dependencies": {
-    "concurrently": "^4.1.1"
+    "@blueprintjs/core": "3.15.1",
+    "file-size": "1.0.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-router-dom": "4.4.0-beta.8",
+    "react-scripts": "2.1.8",
+    "concurrently": "^4.1.1",
+    "watch": "^1.0.2"
   },
   "scripts": {
-    "start": "concurrently --kill-others \"yarn workspace frontend start\" \"yarn workspace backend start:watch\"",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

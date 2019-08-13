@@ -1,11 +1,7 @@
 chromium-downloads
 ==========
 
-<<<<<<< HEAD
-[![Build Status](https://api.travis-ci.org/cypress-io/chromium-downloads.svg?branch=master)](https://travis-ci.org/cypress-io/chromium-downloads)
-=======
 [![Build Status](https://travis-ci.org/flotwig/chromium-downloads.svg?branch=master)](https://travis-ci.org/flotwig/chromium-downloads)
->>>>>>> Add server
 
 Live at: https://chromium.cypress.io
 
