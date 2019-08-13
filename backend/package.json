@@ -3,17 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "watch": "^1.0.2"
+    "bluebird": "^3.5.5",
+    "express": "^4.17.1",
+    "got": "^9.6.0",
+    "nodemon": "^1.19.1",
+    "pg": "^7.12.1",
+    "sequelize": "^5.14.0"
   },
   "scripts": {
     "start": "node index.js",
-    "start:watch": "watch \"yarn start\" ./"
+    "start:watch": "nodemon ./index.js",
+    "deploy": "bluemix cf push"
   },
-  "main": "index",
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "main": "index"
 }

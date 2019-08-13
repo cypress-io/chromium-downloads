@@ -1,0 +1,3 @@
+applications:
+- name: chromium-downloads-backend
+  memory: 256M

@@ -144,7 +144,7 @@ export default class ReleaseTable extends React.Component {
     }
 
     _loadReleases() {
-        fetch('https://omahaproxy.appspot.com/history.json')
+        fetch(`${window.API_URL}/builds`)
         .then(response => {
             return response.json()
         })

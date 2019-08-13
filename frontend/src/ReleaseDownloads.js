@@ -22,8 +22,8 @@ export default class ReleaseDownloads extends React.Component {
         this.releaseOs = this.props.match.params.releaseOs
         this.releaseVersion = this.props.match.params.releaseVersion
         this.releaseChannel = this.props.match.params.releaseChannel
-        this._findBase().then((base) => this._findDownloads(base))
-        .then(downloads => {
+        this._findDownloads()
+        .then(({ downloads }) => {
             this.setState({ loaded: true, downloads })
         })
         .catch(error => {
@@ -163,46 +163,16 @@ export default class ReleaseDownloads extends React.Component {
         )
     }
 
-    // https://omahaproxy.appspot.com/deps.json?version=74.0.3704.1
-    _findBase() {
+    _findDownloads() {
         this.setState({
-            logs: this._logWith(`Loading commit info for ${this.releaseVersion}`)
+            logs: this._logWith(`Loading downloads...`)
         })
-        return fetch(`https://omahaproxy.appspot.com/deps.json?version=${this.releaseVersion}`)
+        return fetch(`${window.API_URL}/builds/${this.releaseVersion}/${this.releaseChannel}/${this.releaseOs}`)
         .then(response => response.json())
-        .then(json => {
-            if (!json['chromium_base_position']) {
-                throw new Error(`Initial base position not found for Chromium ${this.releaseVersion}`)
-            }
-            return parseInt(json['chromium_base_position'])
-        })
-    }
-
-    _findDownloads(base) {
-        this.setState({
-            chromiumBaseCur: base,
-            logs: this._logWith(`Checking Chromium at base position ${base} for available artifacts`)
-        })
-        return fetch(this._getStorageApiUrl(base))
-        .then(response => response.json())
-        .then(json => {
-            this.basesChecked += 1
-            if (!json.items || json.items.length === 0) {
-                if (this.basesChecked === MAX_BASES_TO_CHECK) {
-                    throw new Error(`Reached limit of ${MAX_BASES_TO_CHECK} base checks before finding an artifact. Stopping at base ${base}`)
-                }
-                return this._findDownloads(base + 1)
-            }
-            return json.items
-        })
     }
 
     _logWith(msg) {
         return [msg, ...this.state.logs]
-    }
-
-    _getStorageApiUrl(base) {
-        return `https://www.googleapis.com/storage/v1/b/chromium-browser-snapshots/o?delimiter=/&prefix=${osInfo[this.releaseOs].baseDir}/${base}/&fields=items(kind,mediaLink,metadata,name,size,updated),kind,prefixes,nextPageToken`
     }
 
     _getCrRevUrl(base) {
