@@ -57,7 +57,7 @@ export default class ReleaseDownloads extends React.Component {
                     <div className="bp3-text-muted">
                         Release channel: <Tag intent={channelInfo[this.releaseChannel].color}>{this.releaseChannel}</Tag>{' '}
                         Base revision: <a href={this._getCrRevUrl(this.state.baseRevision)}>{this.state.baseRevision}</a>.{' '}
-                        Found build artifacts at <a href={this._getCrRevUrl(this.state.artifactsRevision)}>{this.state.artifactsRevision}</a> <a href={this._getStorageBrowserUrl(this.state.chromiumBaseCur)}>[browse files]</a>
+                        Found build artifacts at <a href={this._getCrRevUrl(this.state.artifactsRevision)}>{this.state.artifactsRevision}</a> <a href={this._getStorageBrowserUrl(this.state.artifactsRevision)}>[browse files]</a>
                     </div>
                 </Card>
                 <Card>
