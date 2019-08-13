@@ -10,6 +10,8 @@ Build.init({
   os: Sequelize.STRING,
   channel: Sequelize.STRING,
   timestamp: Sequelize.DATE,
+  baseRevision: Sequelize.STRING,
+  artifactsRevision: Sequelize.STRING,
   downloads: Sequelize.JSONB
 }, {
   sequelize,

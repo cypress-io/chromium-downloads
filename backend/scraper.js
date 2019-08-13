@@ -13,9 +13,11 @@ function scrape() {
     return Promise.map(builds, (build) => {
       console.log(`Getting downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
       return build.getDownloads()
-      .then(downloads => {
+      .then(({ downloads, base, foundBase }) => {
         console.log(`Received downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
         build.downloads = downloads
+        build.baseRevision = base
+        build.artifactsRevision = foundBase
         return build
       })
       .then(saveBuild)

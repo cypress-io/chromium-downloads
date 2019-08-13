@@ -103,6 +103,13 @@ function getDownloads(os, version) {
         }
       })
     })
+    .then(downloads => {
+      return {
+        downloads,
+        base,
+        foundBase
+      }
+    })
   })
 }
 

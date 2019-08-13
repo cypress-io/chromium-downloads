@@ -3,8 +3,6 @@ import { Button, NonIdealState, Spinner, Card, H2, H4, HTMLTable, Icon, Breadcru
 import { Link } from 'react-router-dom'
 import { osInfo, getHumanReadableSize, channelInfo } from './util'
 
-const MAX_BASES_TO_CHECK = 50
-
 export default class ReleaseDownloads extends React.Component {
     constructor(props) {
         super(props)
@@ -23,8 +21,8 @@ export default class ReleaseDownloads extends React.Component {
         this.releaseVersion = this.props.match.params.releaseVersion
         this.releaseChannel = this.props.match.params.releaseChannel
         this._findDownloads()
-        .then(({ downloads }) => {
-            this.setState({ loaded: true, downloads })
+        .then(({ downloads, baseRevision, artifactsRevision }) => {
+            this.setState({ loaded: true, downloads, baseRevision, artifactsRevision })
         })
         .catch(error => {
             this.setState({ error })
@@ -43,7 +41,6 @@ export default class ReleaseDownloads extends React.Component {
 
     _renderDownloads() {
         let unknownDownloads = []
-        const baseRevision = this.state.chromiumBaseCur - this.basesChecked
         const title = `Chromium ${this.releaseVersion} for ${osInfo[this.releaseOs].name}`
         document.title = title
         return (
@@ -59,8 +56,8 @@ export default class ReleaseDownloads extends React.Component {
                     <H2>{title}</H2>
                     <div className="bp3-text-muted">
                         Release channel: <Tag intent={channelInfo[this.releaseChannel].color}>{this.releaseChannel}</Tag>{' '}
-                        Base revision: <a href={this._getCrRevUrl(baseRevision)}>{baseRevision}</a>.{' '}
-                        Found build artifacts at <a href={this._getCrRevUrl(this.state.chromiumBaseCur)}>{this.state.chromiumBaseCur}</a> <a href={this._getStorageBrowserUrl(this.state.chromiumBaseCur)}>[browse files]</a>
+                        Base revision: <a href={this._getCrRevUrl(this.state.baseRevision)}>{this.state.baseRevision}</a>.{' '}
+                        Found build artifacts at <a href={this._getCrRevUrl(this.state.artifactsRevision)}>{this.state.artifactsRevision}</a> <a href={this._getStorageBrowserUrl(this.state.chromiumBaseCur)}>[browse files]</a>
                     </div>
                 </Card>
                 <Card>
@@ -75,8 +72,7 @@ export default class ReleaseDownloads extends React.Component {
                         </thead>
                         <tbody>
                         {this.state.downloads.map(download => {
-                            const basename = download.name.slice(download.name.lastIndexOf('/') + 1)
-                            const knownFile = osInfo[this.releaseOs].files.find(file => file.filename === basename)
+                            const knownFile = osInfo[this.releaseOs].files.find(file => file.filename === download.basename)
                             if (!knownFile) {
                                 unknownDownloads.push(download)
                                 return false
@@ -85,7 +81,7 @@ export default class ReleaseDownloads extends React.Component {
                                 <tr key={download.name}>
                                     <td><Icon icon="download"/></td>
                                     <td>
-                                        <a href={download.mediaLink} target="_blank" rel="noopener noreferrer">{basename}</a> ({knownFile.name})
+                                        <a href={download.url} target="_blank" rel="noopener noreferrer">{download.basename}</a> ({knownFile.name})
                                     </td>
                                     <td>
                                         {getHumanReadableSize(download.size)}
@@ -108,12 +104,11 @@ export default class ReleaseDownloads extends React.Component {
                         </thead>
                         <tbody>
                         {unknownDownloads.map(download => {
-                            const basename = download.name.slice(download.name.lastIndexOf('/') + 1)
                             return (
                                 <tr key={download.name}>
                                     <td><Icon icon="help"/></td>
                                     <td>
-                                        <a href={download.mediaLink} target="_blank" rel="noopener noreferrer">{basename}</a>
+                                        <a href={download.url} target="_blank" rel="noopener noreferrer">{download.basename}</a>
                                     </td>
                                     <td>
                                         {getHumanReadableSize(download.size)}
