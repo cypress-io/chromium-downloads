@@ -10,10 +10,8 @@
     "concurrently": "^4.1.1"
   },
   "scripts": {
-    "start": "concurrently --kill-others \"yarn workspace frontend start\" \"yarn workspace backend start:watch\"",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start:watch": "concurrently --kill-others \"yarn workspace frontend start\" \"yarn workspace backend start:watch\"",
+    "start": "yarn workspace backend start"
   },
   "eslintConfig": {
     "extends": "react-app"
