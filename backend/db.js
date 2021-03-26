@@ -1,6 +1,10 @@
 const Sequelize = require('sequelize')
 
-const DATABASE_URL = process.env.DATABASE_URL
+let DATABASE_URL = process.env.DATABASE_URL
+
+if (process.env.NODE_ENV === 'production') {
+  DATABASE_URL += '?ssl=true'
+}
 
 const sequelize = new Sequelize(DATABASE_URL)
 
