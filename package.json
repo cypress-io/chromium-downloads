@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start:watch": "concurrently --kill-others \"yarn workspace frontend start\" \"yarn workspace backend start:watch\"",
-    "start": "yarn workspace backend start"
+    "start": "cd backend && yarn start"
   },
   "eslintConfig": {
     "extends": "react-app"
