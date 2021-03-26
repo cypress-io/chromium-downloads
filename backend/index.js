@@ -39,11 +39,16 @@ app.get('/builds/:version/:channel/:os', (req, res) => {
   })
 })
 
+console.log('Initializing')
+
 db.initialize()
 .then(() => {
+  console.log('Starting scraping')
   scraper.start()
 
   app.listen(PORT, () => {
     console.log(`Backend listening on ${PORT}.`)
   })
+}).catch(e => {
+  console.error(e)
 })
