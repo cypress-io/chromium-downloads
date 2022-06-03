@@ -16,6 +16,18 @@ export default class ReleaseTable extends React.Component {
                 'majorVersion': []
             }
         }
+        const filterStateFromURL = this._decodeFilterState()
+        this.state.filters = {
+            ...this.state.filters,
+            ...filterStateFromURL
+        }
+    }
+
+    componentDidUpdate() {
+        const filterState = this._encodeFilterState()
+        if (window.location.hash !== filterState) {
+            window.location.hash = filterState
+        }
     }
 
     componentDidMount() {
@@ -176,5 +188,24 @@ export default class ReleaseTable extends React.Component {
             this._majorVersions = majorVersions
         }
         return this._majorVersions
+    }
+
+    _encodeFilterState() {
+        return Object.entries(this.state.filters)
+            .map(([key, values]) => values.length ? key + '=' + values.join(',') : '')
+            .filter(Boolean)
+            .join('&')
+    }
+
+    _decodeFilterState() {
+        const filters = this.state.filters
+        return window.location.hash.split(/[#&]/).map(s => {
+            const [ k, v ] = s.split('=',2)
+            const obj = {}
+            if (k && v && filters.hasOwnProperty(k)) {
+                obj[k] = v.split(',')
+            }
+            return obj
+        }).reduce((a,b) => { return {...a,...b} }, {})
     }
 }
