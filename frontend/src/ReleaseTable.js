@@ -151,7 +151,26 @@ export default class ReleaseTable extends React.Component {
         .then(releases => {
             // filter to OS's we recognize
             releases = releases.filter(release => osInfo[release.os])
-            releases = releases.sort((a, b) => a.version.localeCompare(b.version)*-1)
+            releases = releases.sort((a, b) => {
+                var items1 = a.version.split('.');
+                var items2 = b.version.split('.');
+                var k = 0;
+                for (let i in items1) {
+                    let a1 = items1[i];
+                    let b1 = items2[i];
+                    if (typeof b1 === undefined) {
+                        k = -1;
+                        break;
+                    } else {
+                        if (a1 === b1) {
+                            continue;
+                        }
+                        k = Number(b1) - Number(a1);
+                        break;
+                    }
+                }
+                return k;
+            });
             this.setState({
                 releasesLoaded: true,
                 releases
