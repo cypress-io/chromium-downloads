@@ -1,7 +1,7 @@
 const got = require('got')
 
 const HISTORY_URL = 'https://omahaproxy.appspot.com/history.json'
-const BASES_TO_CHECK = 50
+const BASES_TO_CHECK = 75
 
 var osInfo = {
   'win64': {
