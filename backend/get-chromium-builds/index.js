@@ -1,7 +1,8 @@
 const got = require('got')
 
 const HISTORY_URL = 'https://omahaproxy.appspot.com/history.json'
-const BASES_TO_CHECK = 50
+// Cypress's minimum browser version is 64
+const BASES_TO_CHECK = 120
 
 var osInfo = {
   'win64': {
