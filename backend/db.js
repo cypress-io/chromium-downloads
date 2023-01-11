@@ -36,9 +36,9 @@ Build.init(
   }
 );
 
-function initialize() {
+async function initialize() {
   console.log(sequelize);
-  return sequelize.sync();
+  sequelize.sync();
 }
 
 module.exports = {
