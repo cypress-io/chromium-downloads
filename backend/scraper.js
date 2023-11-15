@@ -46,8 +46,6 @@ function scrape() {
       .then(saveBuild)
       .catch((error) => {
         console.error(`Had an error storing downloads for Chromium ${build.version} ${build.channel} on ${build.os}:`, error.message);
-        // console.error(error.stack);
-        // console.error('Build data:', build);
       })
     })
   })
