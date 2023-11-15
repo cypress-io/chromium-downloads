@@ -1,55 +1,77 @@
-const db = require("./db");
 const express = require("express");
+const db = require("./db");
 const scraper = require("./scraper");
+const { downloadDbFromS3, uploadDbToS3 } = require('./s3');
 
 const PORT = Number(process.env.PORT) || 3001;
-
 const app = express();
 
+// Middleware to allow cross-origin requests
 app.use((req, res, next) => {
   res.setHeader("access-control-allow-origin", "*");
-
   next();
 });
 
-app.get("/builds", (req, res) => {
-  db.Build.findAll({
-    attributes: ["version", "os", "channel", "timestamp"],
-    order: [["timestamp", "DESC"]],
-  }).then((builds) => {
+// Route definitions
+// Assuming `db` is the sqlite3 database object and is properly initialized
+
+app.get("/builds", async (req, res) => {
+  const query = "SELECT version, os, channel, timestamp FROM builds ORDER BY timestamp DESC";
+  db.all(query, [], (error, builds) => {
+    if (error) {
+      console.error(error);
+      return res.sendStatus(500);
+    }
     res.json(builds);
   });
 });
 
-app.get("/builds/:version/:channel/:os", (req, res) => {
-  db.Build.findAll({
-    where: {
-      channel: req.params.channel,
-      os: req.params.os,
-      version: req.params.version,
-    },
-  }).then((builds) => {
-    if (!builds.length) {
+app.get("/builds/:version/:channel/:os", async (req, res) => {
+  const { version, channel, os } = req.params;
+  const query = "SELECT * FROM builds WHERE channel = ? AND os = ? AND version = ?";
+  db.all(query, [channel, os, version], (error, builds) => {
+    if (error) {
+      console.error(error);
+      return res.sendStatus(500);
+    }
+    if (builds.length === 0) {
       return res.sendStatus(404);
     }
-
     res.json(builds[0]);
   });
 });
 
-console.log("Initializing");
-
-console.log(db.initialize);
-
-db.initialize()
-  .then(() => {
-    console.log("Starting scraping");
+// Server startup logic
+async function startServer() {
+  try {
+    await downloadDbFromS3();
+    console.log("Database downloaded from S3");
     scraper.start();
-
+    console.log("Scraper started");
     app.listen(PORT, () => {
       console.log(`Backend listening on ${PORT}.`);
     });
-  })
-  .catch((e) => {
-    console.error(e);
-  });
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+// Shutdown logic
+async function handleShutdown() {
+  try {
+    await uploadDbToS3();
+    console.log("Database uploaded to S3");
+    process.exit(0);
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+// Handle shutdown signals
+process.on('SIGINT', handleShutdown);
+process.on('SIGTERM', handleShutdown);
+
+// Initialize the server
+startServer();

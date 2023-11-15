@@ -1,9 +1,32 @@
-const { Build } = require('./db')
 const { getBuilds } = require('./get-chromium-builds')
 const Promise = require('bluebird')
 
+const db = require('./db');
+
 function saveBuild(build) {
-  return Build.create(build)
+  const { version, os, channel, timestamp, baseRevision, artifactsRevision, downloads } = build;
+  return new Promise((resolve, reject) => {
+    const insertQuery = `
+      INSERT INTO builds (version, os, channel, timestamp, baseRevision, artifactsRevision, downloads)
+      SELECT ?, ?, ?, ?, ?, ?, ?
+      WHERE NOT EXISTS (
+        SELECT 1 FROM builds WHERE version = ? AND os = ? AND channel = ?
+      )
+    `;
+    const params = [
+      version, os, channel, timestamp, baseRevision, artifactsRevision, JSON.stringify(downloads),
+      version, os, channel // These are for the WHERE NOT EXISTS subquery
+    ];
+
+    db.run(insertQuery, params, function(err) {
+      if (err) {
+        console.error("Error saving build:", err);
+        reject(err);
+      } else {
+        resolve(this.lastID);
+      }
+    });
+  });
 }
 
 function scrape() {
@@ -21,9 +44,10 @@ function scrape() {
         return build
       })
       .then(saveBuild)
-      .catch(() => {
-        console.error(`Had an error storing downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
-        return
+      .catch((error) => {
+        console.error(`Had an error storing downloads for Chromium ${build.version} ${build.channel} on ${build.os}:`, error.message);
+        // console.error(error.stack);
+        // console.error('Build data:', build);
       })
     })
   })
