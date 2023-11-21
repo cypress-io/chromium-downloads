@@ -2959,13 +2959,13 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-better-sqlite3@^7.4.3:
-  version "7.6.2"
-  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-7.6.2.tgz#47cd8cad5b9573cace535f950ac321166bc31384"
-  integrity sha512-S5zIU1Hink2AH4xPsN0W43T1/AJ5jrPh7Oy07ocuW/AKYYY02GWzz9NH0nbSMn/gw6fDZ5jZ1QsHt1BXAwJ6Lg==
+better-sqlite3@^9.1.0:
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-9.1.1.tgz#f139b180a08ed396e660a0601a46ceefd78b832c"
+  integrity sha512-FhW7bS7cXwkB2SFnPJrSGPmQerVSCzwBgmQ1cIRcYKxLsyiKjljzCbyEqqhYXo5TTBqt5BISiBj2YE2Sy2ynaA==
   dependencies:
     bindings "^1.5.0"
-    prebuild-install "^7.1.0"
+    prebuild-install "^7.1.1"
 
 bfj@6.1.1:
   version "6.1.1"
@@ -9387,7 +9387,7 @@ postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-prebuild-install@^7.1.0:
+prebuild-install@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/prebuild-install/-/prebuild-install-7.1.1.tgz#de97d5b34a70a0c81334fd24641f2a1702352e45"
   integrity sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==

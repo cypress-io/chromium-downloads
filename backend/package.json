@@ -9,7 +9,7 @@
     "express": "^4.17.1",
     "got": "^9.6.0",
     "nodemon": "^1.19.1",
-    "better-sqlite3": "^7.4.3"
+    "better-sqlite3": "^9.1.0"
   },
   "scripts": {
     "start": "node index.js",
