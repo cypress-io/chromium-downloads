@@ -6,26 +6,19 @@ const db = require('./db');
 function saveBuild(build) {
   const { version, os, channel, timestamp, baseRevision, artifactsRevision, downloads } = build;
   return new Promise((resolve, reject) => {
-    const insertQuery = `
-      INSERT INTO builds (version, os, channel, timestamp, baseRevision, artifactsRevision, downloads)
-      SELECT ?, ?, ?, ?, ?, ?, ?
-      WHERE NOT EXISTS (
-        SELECT 1 FROM builds WHERE version = ? AND os = ? AND channel = ?
-      )
-    `;
+    const stmt = db.prepare(`
+    INSERT INTO builds (version, os, channel, timestamp, baseRevision, artifactsRevision, downloads)
+    SELECT ?, ?, ?, ?, ?, ?, ?
+    WHERE NOT EXISTS (
+      SELECT 1 FROM builds WHERE version = ? AND os = ? AND channel = ?
+    )
+  `);
     const params = [
       version, os, channel, timestamp, baseRevision, artifactsRevision, JSON.stringify(downloads),
       version, os, channel // These are for the WHERE NOT EXISTS subquery
     ];
 
-    db.run(insertQuery, params, function(err) {
-      if (err) {
-        console.error("Error saving build:", err);
-        reject(err);
-      } else {
-        resolve(this.lastID);
-      }
-    });
+    stmt.run(params);
   });
 }
 

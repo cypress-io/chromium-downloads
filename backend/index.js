@@ -16,29 +16,19 @@ app.use((req, res, next) => {
 // Assuming `db` is the sqlite3 database object and is properly initialized
 
 app.get("/builds", async (req, res) => {
-  const query = "SELECT version, os, channel, timestamp FROM builds ORDER BY timestamp DESC";
-  db.all(query, [], (error, builds) => {
-    if (error) {
-      console.error(error);
-      return res.sendStatus(500);
-    }
-    res.json(builds);
-  });
+  const stmt = db.prepare("SELECT version, os, channel, timestamp FROM builds ORDER BY timestamp DESC");
+  const builds = stmt.all();
+  res.json(builds);
 });
 
 app.get("/builds/:version/:channel/:os", async (req, res) => {
   const { version, channel, os } = req.params;
-  const query = "SELECT * FROM builds WHERE channel = ? AND os = ? AND version = ?";
-  db.all(query, [channel, os, version], (error, builds) => {
-    if (error) {
-      console.error(error);
-      return res.sendStatus(500);
-    }
-    if (builds.length === 0) {
-      return res.sendStatus(404);
-    }
-    res.json(builds[0]);
-  });
+  const stmt = db.prepare("SELECT * FROM builds WHERE channel = ? AND os = ? AND version = ?");
+  const builds = stmt.all([channel, os, version]);
+  if (builds.length === 0) {
+    return res.sendStatus(404);
+  }
+  res.json(builds[0]);
 });
 
 // Server startup logic

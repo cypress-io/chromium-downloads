@@ -2,11 +2,11 @@
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { Upload } = require('@aws-sdk/lib-storage');
 const fs = require('fs');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 
 const s3Client = new S3Client({
-    region: process.env.AWS_REGION || 'us-east-1'
-  });
+  region: process.env.AWS_REGION || 'us-east-1'
+});
 
 const BUCKET_NAME = process.env.S3_BUCKET_NAME;
 const DB_FILE_NAME = 'chromium_downloads.db';
@@ -52,25 +52,18 @@ async function downloadDbFromS3() {
       // Create an empty file
       fs.writeFileSync(DB_FILE_NAME, '');
       // Initialize the database and create the builds table
-      const db = new sqlite3.Database(DB_FILE_NAME);
-      db.serialize(() => {
-        db.run(`CREATE TABLE IF NOT EXISTS builds (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          version TEXT,
-          os TEXT,
-          channel TEXT,
-          timestamp TEXT,
-          baseRevision TEXT,
-          artifactsRevision TEXT,
-          downloads TEXT
-        )`, (err) => {
-          if (err) {
-            console.error('Error creating builds table', err);
-          } else {
-            console.log('Successfully created the builds table in new DB file');
-          }
-        });
-      });
+      const db = new Database(DB_FILE_NAME);
+      const stmt = db.prepare(`CREATE TABLE IF NOT EXISTS builds (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        version TEXT,
+        os TEXT,
+        channel TEXT,
+        timestamp TEXT,
+        baseRevision TEXT,
+        artifactsRevision TEXT,
+        downloads TEXT
+      )`);
+      stmt.run();
       db.close();
     } else {
       throw err;
