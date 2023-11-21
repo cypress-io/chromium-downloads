@@ -1,47 +1,17 @@
-const Sequelize = require("sequelize");
+const Database = require('better-sqlite3');
+const db = new Database('./chromium_downloads.db');
 
-let DATABASE_URL = process.env.DATABASE_URL;
+// Define the schema and create tables if they don't exist
+const stmt = db.prepare(`CREATE TABLE IF NOT EXISTS builds (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  version TEXT,
+  os TEXT,
+  channel TEXT,
+  timestamp TEXT,
+  baseRevision TEXT,
+  artifactsRevision TEXT,
+  downloads TEXT
+)`);
+stmt.run();
 
-if (process.env.NODE_ENV === "production") {
-  DATABASE_URL += "?ssl=true";
-}
-
-const sequelize = new Sequelize(DATABASE_URL);
-
-class Build extends Sequelize.Model {}
-Build.init(
-  {
-    version: Sequelize.STRING,
-    os: Sequelize.STRING,
-    channel: Sequelize.STRING,
-    timestamp: Sequelize.DATE,
-    baseRevision: Sequelize.STRING,
-    artifactsRevision: Sequelize.STRING,
-    downloads: Sequelize.JSONB,
-  },
-  {
-    sequelize,
-    modelName: "builds",
-    timestamps: false,
-    indexes: [
-      {
-        unique: true,
-        fields: ["version", "os", "channel", "timestamp"],
-      },
-    ],
-    pool: {
-      max: 4,
-      min: 1,
-    },
-  }
-);
-
-async function initialize() {
-  console.log(sequelize);
-  sequelize.sync();
-}
-
-module.exports = {
-  initialize,
-  Build,
-};
+module.exports = db;
