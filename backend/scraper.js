@@ -11,20 +11,22 @@ function scrape() {
   return getBuilds()
   .then(builds => {
     return Promise.map(builds, (build) => {
-      console.log(`Getting downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
-      return build.getDownloads()
-      .then(({ downloads, base, foundBase }) => {
-        console.log(`Received downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
-        build.downloads = downloads
-        build.baseRevision = base
-        build.artifactsRevision = foundBase
-        return build
-      })
-      .then(saveBuild)
-      .catch(() => {
-        console.error(`Had an error storing downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
-        return
-      })
+      if (build.os && build.version && build.channel) {
+        console.log(`Getting downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
+        return build.getDownloads()
+        .then(({ downloads, base, foundBase }) => {
+          console.log(`Received downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
+          build.downloads = downloads
+          build.baseRevision = base
+          build.artifactsRevision = foundBase
+          return build
+        })
+        .then(saveBuild)
+        .catch(() => {
+          console.error(`Had an error storing downloads for Chromium ${build.version} ${build.channel} on ${build.os}`)
+          return
+        })
+      }
     })
   })
 }

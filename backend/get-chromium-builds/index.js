@@ -1,6 +1,5 @@
 const got = require('got')
 
-const HISTORY_URL = 'https://omahaproxy.appspot.com/history.json'
 // Cypress's minimum browser version is 64
 const BASES_TO_CHECK = 120
 
@@ -56,12 +55,12 @@ function getStorageApiUrl(os, base) {
 }
 
 function findInitialBase(version) {
-  return got(`https://omahaproxy.appspot.com/deps.json?version=${version}`, { json: true })
+  return got(`https://chromiumdash.appspot.com/fetch_version?version=${version}`, { json: true })
   .then(({ body }) => {
-    if (!body['chromium_base_position']) {
+    if (!body['chromium_main_branch_position']) {
       throw new Error(`Initial base position not found for Chromium ${version}`)
     }
-    return Number(body['chromium_base_position'])
+    return Number(body['chromium_main_branch_position'])
   })
 }
 
@@ -115,13 +114,19 @@ function getDownloads(os, version) {
 }
 
 function getBuilds() {
-  return got(HISTORY_URL, { json: true })
+  return got('https://versionhistory.googleapis.com/v1/chrome/platforms/all/channels/all/versions/all/releases?filter=starttime%3E2021-01-01T00:00:00Z', { json: true })
   .then(({ body: releaseHistory}) => {
-    return releaseHistory.map(release => {
+    return releaseHistory.releases.map(release => {
+      release.timestamp = release.serving.startTime
+      release.version = release.name.toString().split("/")[6]
+      release.os = release.name.toString().split("/")[2]
+      release.channel = release.name.toString().split("/")[4]
+
+      if (!osInfo[release.os]) {
+        return false
+      }
+
       release.getDownloads = () => {
-        if (!osInfo[release.os]) {
-          return Promise.reject(new Error('Unsupported OS'))
-        }
         return getDownloads(release.os, release.version)
       }
 
