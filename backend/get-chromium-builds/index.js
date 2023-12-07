@@ -114,7 +114,7 @@ function getDownloads(os, version) {
 }
 
 function getBuilds() {
-  return got('https://versionhistory.googleapis.com/v1/chrome/platforms/all/channels/all/versions/all/releases?filter=endtime%3E2021-01-01T00:00:00Z', { json: true })
+  return got('https://versionhistory.googleapis.com/v1/chrome/platforms/all/channels/all/versions/all/releases?filter=starttime%3E2021-01-01T00:00:00Z', { json: true })
   .then(({ body: releaseHistory}) => {
     return releaseHistory.releases.map(release => {
       release.timestamp = release.serving.startTime
