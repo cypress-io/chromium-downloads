@@ -113,7 +113,7 @@ export default class ReleaseTable extends React.Component {
                             return (
                                 <tr key={`${release.version} ${release.os} ${release.timestamp}`}>
                                     <td>{release.version}</td>
-                                    <td><Tag intent={channelInfo[release.channel].color}>{release.channel}</Tag></td>
+                                    <td><Tag intent={channelInfo[release.channel].color ? channelInfo[release.channel].color : 'danger'}>{release.channel}</Tag></td>
                                     <td>
                                         <Link to={`/${release.os}/`}>{osInfo[release.os].name}</Link>
                                     </td>
