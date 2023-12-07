@@ -148,7 +148,7 @@ function getBuilds() {
   //{"timestamp": "2020-12-22 08:55:08.893176", "version": "89.0.4364.0", "os": "android", "channel": "canary"},
   return got('https://versionhistory.googleapis.com/v1/chrome/platforms/all/channels/all/versions/all/releases?filter=endtime%3E2021-01-01T00:00:00Z', { json: true })
   .then(({ body: releaseHistory}) => {
-    return releaseHistory.map(release => {
+    return releaseHistory.releases.map(release => {
       
       release.timestamp = release.serving.startTime
       release.version = release.name.toString().split("/")[6]
