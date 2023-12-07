@@ -19,6 +19,9 @@ export const channelInfo = {
     },
     'beta': {
         color: 'danger'
+    },
+    'extended': {
+        color: 'danger'
     }
 }
 
