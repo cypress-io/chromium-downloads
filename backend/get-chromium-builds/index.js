@@ -149,20 +149,20 @@ function getBuilds() {
   return got('https://versionhistory.googleapis.com/v1/chrome/platforms/all/channels/all/versions/all/releases?filter=endtime%3E2021-01-01T00:00:00Z', { json: true })
   .then(({ body: releaseHistory}) => {
     return releaseHistory.releases.map(release => {
-      
       release.timestamp = release.serving.startTime
       release.version = release.name.toString().split("/")[6]
       release.os = release.name.toString().split("/")[2]
       release.channel = release.name.toString().split("/")[4]
 
-      release.getDownloads = () => {
-        if (!osInfo[os]) {
-          return Promise.reject(new Error('Unsupported OS'))
-        }
-        return getDownloads(os, version)
+      if (!osInfo[release.os]) {
+        return false
       }
 
-      return {timestamp, version, os, channel}
+      release.getDownloads = () => {
+        return getDownloads(release.os, release.version)
+      }
+
+      return release
     })
   })
 }
